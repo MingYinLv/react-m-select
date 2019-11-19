@@ -5,9 +5,10 @@ import commonjs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import url from 'rollup-plugin-url';
 import postcss from 'rollup-plugin-postcss';
+import serve from 'rollup-plugin-serve';
 
 export default {
-  input: 'src/main.ts',
+  input: 'src/index.ts',
   output: {
     file: 'dist/index.js',
     format: 'iife',
@@ -17,6 +18,9 @@ export default {
     include: 'src/**',
   },
   plugins: [
+    serve({
+      contentBase: ['dist', 'examples']
+    }),
     url(),
     postcss({
       extensions: ['.less', '.css'],
