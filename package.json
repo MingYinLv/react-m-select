@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Rollup Configuration",
   "main": "dist/index.js",
+  "module": "dist/index.es.js",
   "author": "MingYin Lv",
   "license": "MIT",
   "scripts": {
