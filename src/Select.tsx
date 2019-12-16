@@ -55,7 +55,6 @@ const Select = (props: SelectProps) => {
     if (!firstClick) return '';
     return ReactDOM.createPortal(
       <div
-        onClick={handleClickHide}
         onAnimationEnd={handleAnimationEnd}
         className={getClass('popover', {
           [getClass('popover-show')]: animateVisible,
@@ -74,7 +73,9 @@ const Select = (props: SelectProps) => {
           })}
         >
           <div className={getClass('popover-overlay-head')}>
-            <div className={getClass('popover-overlay-cancel')}>取消</div>
+            <div className={getClass('popover-overlay-cancel')} onClick={handleClickHide}>
+              取消
+            </div>
             <div className={getClass('popover-overlay-fill')} />
             <div className={getClass('popover-overlay-confirm')}>确定</div>
           </div>

@@ -22,6 +22,17 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+
 function __spreadArrays() {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
     for (var r = Array(s), k = 0, i = 0; i < il; i++)
@@ -89,17 +100,126 @@ var classnames = createCommonjsModule(function (module) {
 var MainContext = React__default.createContext({ getClass: function () { return ''; } });
 //# sourceMappingURL=contexts.js.map
 
+var EventType;
+(function (EventType) {
+    EventType["None"] = "";
+    EventType["Start"] = "Start";
+    EventType["Move"] = "Move";
+    EventType["End"] = "End";
+})(EventType || (EventType = {}));
+var useTouch = function (ref) {
+    if (process.env.NODE_ENV === 'development') {
+        if (typeof ref !== 'object' || typeof ref.current === 'undefined') {
+            console.error('useTouch expects a single ref argument.');
+        }
+    }
+    var _a = reactUse.useRafState({
+        eventType: EventType.None,
+        prevEventType: EventType.None,
+        directions: {
+            vertical: 0,
+            horizontal: 0,
+        },
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0,
+        moveX: 0,
+        moveY: 0,
+    }), state = _a[0], setState = _a[1];
+    var setFullState = function (args) {
+        setState(function (prev) { return (__assign(__assign(__assign({}, prev), { prevEventType: prev.eventType }), args)); });
+    };
+    var touchStartHandle = function (event) {
+        var target = event.changedTouches[0];
+        setFullState({
+            eventType: EventType.Start,
+            startX: target.clientX,
+            startY: target.clientY,
+        });
+    };
+    var touchMoveHandle = function (event) {
+        setState(function (prev) {
+            var _a = event.changedTouches[0], clientX = _a.clientX, clientY = _a.clientY;
+            var prevX = prev.eventType === EventType.Move ? prev.moveX : prev.startX;
+            var prevY = prev.eventType === EventType.Move ? prev.moveY : prev.startY;
+            var directions = {
+                vertical: prevY - clientY,
+                horizontal: prevX - clientX,
+            };
+            return __assign(__assign({}, prev), { directions: directions, prevEventType: prev.eventType, eventType: EventType.Move, moveX: clientX, moveY: clientY });
+        });
+    };
+    var touchEndHandle = function (event) {
+        var target = event.changedTouches[0];
+        setFullState({
+            eventType: EventType.End,
+            endX: target.clientX,
+            endY: target.clientY,
+        });
+    };
+    React.useEffect(function () {
+        if (ref && ref.current) {
+            ref.current.addEventListener('touchstart', touchStartHandle);
+            ref.current.addEventListener('touchmove', touchMoveHandle);
+            ref.current.addEventListener('touchend', touchEndHandle);
+        }
+        return function () {
+            if (ref && ref.current) {
+                ref.current.removeEventListener('touchstart', touchStartHandle);
+                ref.current.removeEventListener('touchmove', touchMoveHandle);
+                ref.current.removeEventListener('touchend', touchEndHandle);
+            }
+        };
+    }, [ref]);
+    return state;
+};
+//# sourceMappingURL=useTouch.js.map
+
 /**
  * Created 2019/12/16 13:57 By lvmingyin
  */
+var findNear = function (_a) {
+    var value = _a.value, step = _a.step, min = _a.min, max = _a.max;
+    var result = Math.round(value / step) * 30;
+    if (result > max)
+        return max;
+    else if (result < min)
+        return min;
+    return result;
+};
 var OptionList = function (_a) {
     var items = _a.items;
     var getClass = React.useContext(MainContext).getClass;
-    var scroll = React.useRef(null);
-    var _b = reactUse.useMouse(scroll), docX = _b.docX, docY = _b.docY, posX = _b.posX, posY = _b.posY, elX = _b.elX, elY = _b.elY, elW = _b.elW, elH = _b.elH;
-    console.log(docX, docY, posX, posY, elX, elY, elW, elH);
-    return (React__default.createElement("div", { className: getClass('popover-overlay-options') },
-        React__default.createElement("div", { className: getClass('popover-overlay-options-scroll'), ref: scroll }, items.map(function (n) { return (React__default.createElement("div", { key: n.value, className: getClass('popover-overlay-options-item') },
+    var _b = reactUse.useRafState(0), scrollY = _b[0], setScrollY = _b[1];
+    var _c = reactUse.useRafState(0), lastMoveDiff = _c[0], setLastMoveDiff = _c[1];
+    var minScroll = -(items.length - 1) * 30;
+    var maxScroll = 0;
+    var options = React.useRef(null);
+    var touch = useTouch(options);
+    React.useEffect(function () {
+        if (touch.eventType === EventType.End) {
+            setScrollY(findNear({ value: scrollY, step: 30, min: minScroll, max: maxScroll }));
+        }
+        if (touch.eventType !== EventType.Move)
+            return;
+        var vertical = touch.directions.vertical;
+        setLastMoveDiff(vertical);
+        if (scrollY - vertical < minScroll) {
+            setScrollY(minScroll);
+        }
+        else if (scrollY - vertical > maxScroll) {
+            setScrollY(maxScroll);
+        }
+        else {
+            var tmpY = scrollY - vertical;
+            setScrollY(tmpY);
+        }
+    }, [touch]);
+    return (React__default.createElement("div", { className: getClass('popover-overlay-options'), ref: options },
+        React__default.createElement("div", { className: getClass('popover-overlay-options-scroll'), style: {
+                transform: "translate3d(0, " + scrollY + "px, 0)",
+            } }, items.map(function (n) { return (React__default.createElement("div", { key: n.value, className: getClass('popover-overlay-options-item') },
             React__default.createElement("span", { className: getClass('popover-overlay-options-item-label') }, n.label))); }))));
 };
 
@@ -144,7 +264,7 @@ var Select = function (props) {
         var _a;
         if (!firstClick)
             return '';
-        return ReactDOM.createPortal(React__default.createElement("div", { onClick: handleClickHide, onAnimationEnd: handleAnimationEnd, className: getClass('popover', (_a = {},
+        return ReactDOM.createPortal(React__default.createElement("div", { onAnimationEnd: handleAnimationEnd, className: getClass('popover', (_a = {},
                 _a[getClass('popover-show')] = animateVisible,
                 _a)) },
             React__default.createElement("div", { className: getClass('popover-mask', {
@@ -156,7 +276,7 @@ var Select = function (props) {
                     fadeOutDown: !visible,
                 }) },
                 React__default.createElement("div", { className: getClass('popover-overlay-head') },
-                    React__default.createElement("div", { className: getClass('popover-overlay-cancel') }, "\u53D6\u6D88"),
+                    React__default.createElement("div", { className: getClass('popover-overlay-cancel'), onClick: handleClickHide }, "\u53D6\u6D88"),
                     React__default.createElement("div", { className: getClass('popover-overlay-fill') }),
                     React__default.createElement("div", { className: getClass('popover-overlay-confirm') }, "\u786E\u5B9A")),
                 React__default.createElement(OptionList, { items: props.items }))), container.current);

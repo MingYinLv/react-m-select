@@ -47,12 +47,17 @@
   color: #3cc;
 }
 .m-zhinanmao-select-popover-overlay-options {
-  height: 150px;
+  overflow: hidden;
+  padding-top: 60px;
+  padding-bottom: 60px;
   position: relative;
+  z-index: 2;
+  height: 30px;
 }
 .m-zhinanmao-select-popover-overlay-options:before,
 .m-zhinanmao-select-popover-overlay-options:after {
   position: absolute;
+  z-index: 1;
   left: 0;
   content: '';
   right: 0;
@@ -67,13 +72,11 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2));
 }
 .m-zhinanmao-select-popover-overlay-options-scroll {
-  overflow: auto;
-  padding-top: 60px;
-  padding-bottom: 60px;
-  position: relative;
-  height: 30px;
+  transition: transform 50ms;
 }
 .m-zhinanmao-select-popover-overlay-options-item {
+  position: relative;
+  z-index: 2;
   line-height: 30px;
   text-align: center;
 }
