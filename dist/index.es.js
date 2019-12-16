@@ -1,11 +1,6 @@
-'use strict';
-
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var React = require('react');
-var React__default = _interopDefault(React);
-var ReactDOM = _interopDefault(require('react-dom'));
-var reactUse = require('react-use');
+import React, { useContext, useRef, useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { useMouse } from 'react-use';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -86,7 +81,7 @@ var classnames = createCommonjsModule(function (module) {
 /**
  * Created 2019/12/16 14:47 By lvmingyin
  */
-var MainContext = React__default.createContext({ getClass: function () { return ''; } });
+var MainContext = React.createContext({ getClass: function () { return ''; } });
 //# sourceMappingURL=contexts.js.map
 
 /**
@@ -94,23 +89,23 @@ var MainContext = React__default.createContext({ getClass: function () { return 
  */
 var OptionList = function (_a) {
     var items = _a.items;
-    var getClass = React.useContext(MainContext).getClass;
-    var scroll = React.useRef(null);
-    var _b = reactUse.useMouse(scroll), docX = _b.docX, docY = _b.docY, posX = _b.posX, posY = _b.posY, elX = _b.elX, elY = _b.elY, elW = _b.elW, elH = _b.elH;
+    var getClass = useContext(MainContext).getClass;
+    var scroll = useRef(null);
+    var _b = useMouse(scroll), docX = _b.docX, docY = _b.docY, posX = _b.posX, posY = _b.posY, elX = _b.elX, elY = _b.elY, elW = _b.elW, elH = _b.elH;
     console.log(docX, docY, posX, posY, elX, elY, elW, elH);
-    return (React__default.createElement("div", { className: getClass('popover-overlay-options') },
-        React__default.createElement("div", { className: getClass('popover-overlay-options-scroll'), ref: scroll }, items.map(function (n) { return (React__default.createElement("div", { key: n.value, className: getClass('popover-overlay-options-item') },
-            React__default.createElement("span", { className: getClass('popover-overlay-options-item-label') }, n.label))); }))));
+    return (React.createElement("div", { className: getClass('popover-overlay-options') },
+        React.createElement("div", { className: getClass('popover-overlay-options-scroll'), ref: scroll }, items.map(function (n) { return (React.createElement("div", { key: n.value, className: getClass('popover-overlay-options-item') },
+            React.createElement("span", { className: getClass('popover-overlay-options-item-label') }, n.label))); }))));
 };
 
 /**
  * Created 2019/11/18 14:54 By lvmingyin
  */
 var Select = function (props) {
-    var container = React.useRef(document.createElement('div'));
-    var _a = React.useState(false), visible = _a[0], setVisible = _a[1];
-    var _b = React.useState(false), animateVisible = _b[0], setAnimateVisible = _b[1];
-    var _c = React.useState(false), firstClick = _c[0], setFirstClick = _c[1];
+    var container = useRef(document.createElement('div'));
+    var _a = useState(false), visible = _a[0], setVisible = _a[1];
+    var _b = useState(false), animateVisible = _b[0], setAnimateVisible = _b[1];
+    var _c = useState(false), firstClick = _c[0], setFirstClick = _c[1];
     function getClass(name) {
         var classnames$1 = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -131,41 +126,41 @@ var Select = function (props) {
         setVisible(false);
         props.onVisibleChange && props.onVisibleChange(false);
     }
-    React.useEffect(function () {
+    useEffect(function () {
         document.body.append(container.current);
         return function () {
             document.body.removeChild(container.current);
         };
     }, []);
-    React.useEffect(function () {
+    useEffect(function () {
         setVisible(props.visible || false);
     }, [props.visible]);
     function renderSelect() {
         var _a;
         if (!firstClick)
             return '';
-        return ReactDOM.createPortal(React__default.createElement("div", { onClick: handleClickHide, onAnimationEnd: handleAnimationEnd, className: getClass('popover', (_a = {},
+        return ReactDOM.createPortal(React.createElement("div", { onClick: handleClickHide, onAnimationEnd: handleAnimationEnd, className: getClass('popover', (_a = {},
                 _a[getClass('popover-show')] = animateVisible,
                 _a)) },
-            React__default.createElement("div", { className: getClass('popover-mask', {
+            React.createElement("div", { className: getClass('popover-mask', {
                     fadeIn: visible,
                     fadeOut: !visible,
                 }) }),
-            React__default.createElement("div", { className: getClass('popover-overlay', {
+            React.createElement("div", { className: getClass('popover-overlay', {
                     fadeInUp: visible,
                     fadeOutDown: !visible,
                 }) },
-                React__default.createElement("div", { className: getClass('popover-overlay-head') },
-                    React__default.createElement("div", { className: getClass('popover-overlay-cancel') }, "\u53D6\u6D88"),
-                    React__default.createElement("div", { className: getClass('popover-overlay-fill') }),
-                    React__default.createElement("div", { className: getClass('popover-overlay-confirm') }, "\u786E\u5B9A")),
-                React__default.createElement(OptionList, { items: props.items }))), container.current);
+                React.createElement("div", { className: getClass('popover-overlay-head') },
+                    React.createElement("div", { className: getClass('popover-overlay-cancel') }, "\u53D6\u6D88"),
+                    React.createElement("div", { className: getClass('popover-overlay-fill') }),
+                    React.createElement("div", { className: getClass('popover-overlay-confirm') }, "\u786E\u5B9A")),
+                React.createElement(OptionList, { items: props.items }))), container.current);
     }
-    return (React__default.createElement(MainContext.Provider, { value: { getClass: getClass } },
-        React__default.createElement("div", { className: getClass('select'), onClick: handleClickInput }, props.children),
+    return (React.createElement(MainContext.Provider, { value: { getClass: getClass } },
+        React.createElement("div", { className: getClass('select'), onClick: handleClickInput }, props.children),
         renderSelect()));
 };
 
 //# sourceMappingURL=index.js.map
 
-module.exports = Select;
+export default Select;

@@ -11,6 +11,8 @@
     "start": "rollup -c -w"
   },
   "devDependencies": {
+    "@types/react": "^16.9.16",
+    "@types/react-dom": "^16.9.4",
     "less": "^3.10.3",
     "prettier": "1.19.1",
     "react": "^16.12.0",
@@ -22,7 +24,10 @@
     "rollup-plugin-url": "^3.0.0",
     "typescript": "^3.7.2"
   },
-  "dependencies": {},
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react-use": "^13.12.2"
+  },
   "peerDependencies": {
     "react": "^16.12.0",
     "react-dom": "^16.12.0"
