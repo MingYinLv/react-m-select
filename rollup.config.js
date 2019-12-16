@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import url from 'rollup-plugin-url';
 import postcss from 'rollup-plugin-postcss';
-import pkg from 'package';
+import pkg from './package.json';
 
 export default {
   input: 'src/index.ts',
@@ -29,6 +29,7 @@ export default {
     postcss({ extract: `dist/index.css` }),
     commonjs(),
     typescript({
+      rollupCommonJSResolveHack: true,
       clean: true,
     }),
   ],
