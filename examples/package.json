@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "start-storybook"
+    "deploy": "storybook-to-ghpages",
+    "build": "build-storybook",
+    "start": "start-storybook -s public"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@storybook/react": "^5.2.6",
+    "@storybook/storybook-deployer": "^2.8.1",
     "babel-loader": "^8.0.6"
   },
   "dependencies": {
