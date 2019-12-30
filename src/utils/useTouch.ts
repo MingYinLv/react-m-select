@@ -1,5 +1,5 @@
 import { RefObject, useEffect } from 'react';
-import { useRafState } from 'react-use';
+import useRafState from 'react-use/lib/useRafState';
 
 export interface State {
   eventType: EventType;
@@ -59,6 +59,10 @@ const useTouch = (ref: RefObject<Element>): State => {
       eventType: EventType.Start,
       startX: target.clientX,
       startY: target.clientY,
+      directions: {
+        vertical: 0,
+        horizontal: 0,
+      },
     });
   };
 
